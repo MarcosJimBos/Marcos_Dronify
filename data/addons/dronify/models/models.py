@@ -5,25 +5,17 @@ from datetime import datetime
 from .logica_dronify import calcular_consumo_vuelo
 
 
-# Clase CONTACTOS: CLIENTES Y PILOTOS (res.partner)
+# ==========================================================
+# CONTACTOS: CLIENTES Y PILOTOS
+# ==========================================================
+
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    es_cliente = fields.Boolean(
-        string="¿Es cliente?"
-    )
-
-    es_vip = fields.Boolean(
-        string="¿Es cliente VIP?"
-    )
-
-    es_piloto = fields.Boolean(
-        string="¿Es piloto?"
-    )
-
-    licencia = fields.Char(
-        string="Número de licencia"
-    )
+    es_cliente = fields.Boolean(string="¿Es cliente?")
+    es_vip = fields.Boolean(string="¿Es cliente VIP?")
+    es_piloto = fields.Boolean(string="¿Es piloto?")
+    licencia = fields.Char(string="Número de licencia")
 
     dron_autorizado_ids = fields.Many2many(
         comodel_name="dronify.dron",
@@ -42,26 +34,17 @@ class ResPartner(models.Model):
                 )
 
 
+# ==========================================================
+# DRONES
+# ==========================================================
 
-# Clase DRONES
 class Dron(models.Model):
     _name = "dronify.dron"
     _description = "Gestión de drones"
 
-    name = fields.Char(
-        string="Nombre del dron",
-        required=True
-    )
-
-    capacidad_max = fields.Float(
-        string="Capacidad máxima (kg)",
-        required=True
-    )
-
-    bateria = fields.Integer(
-        string="Nivel de batería (%)",
-        default=100
-    )
+    name = fields.Char(string="Nombre del dron", required=True)
+    capacidad_max = fields.Float(string="Capacidad máxima (kg)", required=True)
+    bateria = fields.Integer(string="Nivel de batería (%)", default=100)
 
     estado = fields.Selection(
         selection=[
@@ -81,27 +64,19 @@ class Dron(models.Model):
     )
 
 
+# ==========================================================
+# PAQUETES
+# ==========================================================
 
-# Clase PAQUETES
 class Paquete(models.Model):
     _name = "dronify.paquete"
     _description = "Paquetes a transportar"
 
-    codigo = fields.Char(
-        string="Código",
-        readonly=True,
-        copy=False
-    )
+    codigo = fields.Char(string="Código", readonly=True, copy=False)
 
-    name = fields.Char(
-        string="Descripción",
-        required=True
-    )
+    name = fields.Char(string="Descripción", required=True)
 
-    peso = fields.Float(
-        string="Peso (kg)",
-        required=True
-    )
+    peso = fields.Float(string="Peso (kg)", required=True)
 
     cliente_id = fields.Many2one(
         comodel_name="res.partner",
@@ -129,16 +104,15 @@ class Paquete(models.Model):
         return super().create(vals)
 
 
-# OPERACIONES: VUELOS
+# ==========================================================
+# VUELOS
+# ==========================================================
+
 class Vuelo(models.Model):
     _name = "dronify.vuelo"
     _description = "Registro de vuelos"
 
-    codigo = fields.Char(
-        string="Código",
-        readonly=True,
-        copy=False
-    )
+    codigo = fields.Char(string="Código", readonly=True, copy=False)
 
     name = fields.Char(
         string="Nombre del vuelo",
@@ -165,13 +139,8 @@ class Vuelo(models.Model):
         string="Paquetes"
     )
 
-    preparado = fields.Boolean(
-        string="Preparado"
-    )
-
-    realizado = fields.Boolean(
-        string="Realizado"
-    )
+    preparado = fields.Boolean(string="Preparado")
+    realizado = fields.Boolean(string="Realizado")
 
     peso_total = fields.Float(
         string="Peso total (kg)",
@@ -185,11 +154,19 @@ class Vuelo(models.Model):
         store=True
     )
 
+    # ==========================
+    # CREATE
+    # ==========================
+
     @api.model
     def create(self, vals):
         if not vals.get("codigo"):
             vals["codigo"] = datetime.now().strftime("%y%m%d%H%M%S")
         return super().create(vals)
+
+    # ==========================
+    # COMPUTES
+    # ==========================
 
     @api.depends("paquetes_ids.peso")
     def _compute_peso_total(self):
@@ -203,3 +180,19 @@ class Vuelo(models.Model):
                 vuelo.peso_total,
                 vuelo.piloto_id.es_vip if vuelo.piloto_id else False
             )
+
+    # ==========================
+    # BOTONES 
+    # ==========================
+
+    def action_preparar_vuelo(self):
+        for vuelo in self:
+            vuelo.preparado = True
+
+    def action_desbloquear(self):
+        for vuelo in self:
+            vuelo.preparado = False
+
+    def action_finalizar_vuelo(self):
+        for vuelo in self:
+            vuelo.realizado = True
