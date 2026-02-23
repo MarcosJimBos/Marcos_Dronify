@@ -97,11 +97,12 @@ class Paquete(models.Model):
         readonly=True
     )
 
-    @api.model
-    def create(self, vals):
-        if not vals.get("codigo"):
-            vals["codigo"] = datetime.now().strftime("%Y%m%d%H%M%S")
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("codigo"):
+                vals["codigo"] = datetime.now().strftime("%Y%m%d%H%M%S")
+        return super().create(vals_list)
 
 
 # ==========================================================
@@ -158,11 +159,12 @@ class Vuelo(models.Model):
     # CREATE
     # ==========================
 
-    @api.model
-    def create(self, vals):
-        if not vals.get("codigo"):
-            vals["codigo"] = datetime.now().strftime("%y%m%d%H%M%S")
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("codigo"):
+                vals["codigo"] = datetime.now().strftime("%y%m%d%H%M%S")
+        return super().create(vals_list)
 
     # ==========================
     # COMPUTES

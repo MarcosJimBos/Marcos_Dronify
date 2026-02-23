@@ -222,15 +222,15 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
-            
-            <xpath expr="//field[@name='phone']" position="after">
-                <field name="es_cliente"/>
-                <field name="es_vip"
-                       invisible="es_cliente == False"/>
-
-                <field name="es_piloto"/>
-                <field name="licencia"
-                       invisible="es_piloto == False"/>
+            <xpath expr="//sheet" position="inside">
+                <group string="Dronify">
+                    <field name="es_cliente"/>
+                    <field name="es_vip"
+                           invisible="es_cliente == False"/>
+                    <field name="es_piloto"/>
+                    <field name="licencia"
+                           invisible="es_piloto == False"/>
+                </group>
             </xpath>
 
         </field>
