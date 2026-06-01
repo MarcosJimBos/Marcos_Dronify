@@ -52,7 +52,12 @@ class Dron(models.Model):
             ("vuelo", "En vuelo"),
             ("taller", "En taller"),
         ],
+<<<<<<< HEAD
         default="disponible"
+=======
+        default="disponible",
+        string="Estado"
+>>>>>>> 9f4f54e (Subida proyecto final)
     )
 
     piloto_autorizado_ids = fields.Many2many(
@@ -73,9 +78,13 @@ class Paquete(models.Model):
     _description = "Paquetes a transportar"
 
     codigo = fields.Char(string="Código", readonly=True, copy=False)
+<<<<<<< HEAD
 
     name = fields.Char(string="Descripción", required=True)
 
+=======
+    name = fields.Char(string="Descripción", required=True)
+>>>>>>> 9f4f54e (Subida proyecto final)
     peso = fields.Float(string="Peso (kg)", required=True)
 
     cliente_id = fields.Many2one(
@@ -114,7 +123,10 @@ class Vuelo(models.Model):
     _description = "Registro de vuelos"
 
     codigo = fields.Char(string="Código", readonly=True, copy=False)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f4f54e (Subida proyecto final)
     name = fields.Char(
         string="Nombre del vuelo",
         required=True,
@@ -134,6 +146,15 @@ class Vuelo(models.Model):
         required=True
     )
 
+<<<<<<< HEAD
+=======
+    zona_id = fields.Many2one(
+        comodel_name="dronify.zona",
+        string="Zona de destino",
+        required=True
+    )
+
+>>>>>>> 9f4f54e (Subida proyecto final)
     paquetes_ids = fields.One2many(
         comodel_name="dronify.paquete",
         inverse_name="vuelo_id",
@@ -155,10 +176,13 @@ class Vuelo(models.Model):
         store=True
     )
 
+<<<<<<< HEAD
     # ==========================
     # CREATE
     # ==========================
 
+=======
+>>>>>>> 9f4f54e (Subida proyecto final)
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -166,15 +190,19 @@ class Vuelo(models.Model):
                 vals["codigo"] = datetime.now().strftime("%y%m%d%H%M%S")
         return super().create(vals_list)
 
+<<<<<<< HEAD
     # ==========================
     # COMPUTES
     # ==========================
 
+=======
+>>>>>>> 9f4f54e (Subida proyecto final)
     @api.depends("paquetes_ids.peso")
     def _compute_peso_total(self):
         for vuelo in self:
             vuelo.peso_total = sum(vuelo.paquetes_ids.mapped("peso"))
 
+<<<<<<< HEAD
     @api.depends("peso_total", "piloto_id.es_vip")
     def _compute_consumo_estimado(self):
         for vuelo in self:
@@ -198,3 +226,91 @@ class Vuelo(models.Model):
     def action_finalizar_vuelo(self):
         for vuelo in self:
             vuelo.realizado = True
+=======
+    @api.depends("peso_total", "zona_id.distancia_km", "zona_id.nivel_riesgo", "paquetes_ids.cliente_id.es_vip")
+    def _compute_consumo_estimado(self):
+        for vuelo in self:
+            # Determinar si algún cliente es VIP
+            es_vip = any(vuelo.paquetes_ids.mapped("cliente_id.es_vip"))
+            peso = vuelo.peso_total or 0.0
+            distancia = vuelo.zona_id.distancia_km or 1.0
+            riesgo = 1
+            if vuelo.zona_id and vuelo.zona_id.nivel_riesgo:
+                try:
+                    riesgo = int(vuelo.zona_id.nivel_riesgo)
+                except (ValueError, TypeError):
+                    riesgo = 1
+            vuelo.consumo_estimado = calcular_consumo_vuelo(
+                peso, distancia, riesgo, es_vip
+            )
+
+    def action_preparar_vuelo(self):
+        for vuelo in self:
+            vuelo._validar_preparacion()
+            vuelo.preparado = True
+            vuelo.dron_id.estado = "vuelo"
+
+    def action_desbloquear(self):
+        for vuelo in self:
+            if vuelo.realizado:
+                raise ValidationError("No se puede modificar un vuelo ya realizado.")
+            vuelo.preparado = False
+            vuelo.dron_id.estado = "disponible"
+
+    def action_finalizar_vuelo(self):
+        for vuelo in self:
+            if not vuelo.preparado:
+                raise ValidationError("El vuelo debe estar preparado antes de finalizar.")
+            vuelo.realizado = True
+            # Descontar batería
+            if vuelo.dron_id:
+                nueva_bateria = vuelo.dron_id.bateria - vuelo.consumo_estimado
+                vuelo.dron_id.bateria = max(0, int(nueva_bateria))
+                vuelo.dron_id.estado = "disponible"
+
+    @api.constrains("preparado")
+    def _validar_preparacion(self):
+        for vuelo in self:
+            if vuelo.preparado:
+                errores = []
+                if not vuelo.dron_id or not vuelo.piloto_id:
+                    errores.append("Debe asignar un dron y un piloto.")
+                if not vuelo.paquetes_ids:
+                    errores.append("Debe asignar al menos un paquete.")
+                if vuelo.peso_total > vuelo.dron_id.capacidad_max:
+                    errores.append("El peso total supera la capacidad máxima del dron.")
+                if vuelo.dron_id.estado != "disponible":
+                    errores.append("El dron no está disponible.")
+                if vuelo.dron_id.bateria < vuelo.consumo_estimado:
+                    errores.append("La batería del dron es insuficiente para el vuelo.")
+                if vuelo.dron_id not in vuelo.piloto_id.dron_autorizado_ids:
+                    errores.append("El piloto no está autorizado para este dron.")
+                if not vuelo.zona_id:
+                    errores.append("Debe asignar una zona de destino.")
+                if errores:
+                    raise ValidationError("\n".join(errores))
+
+
+# ==========================================================
+# ZONAS DE DESTINO
+# ==========================================================
+
+class Zona(models.Model):
+    _name = "dronify.zona"
+    _description = "Zonas de destino y riesgo"
+
+    name = fields.Char(string="Nombre de la zona", required=True)
+    distancia_km = fields.Float(string="Distancia (km)", default=1.0)
+    nivel_riesgo = fields.Selection(
+        selection=[
+            ("1", "Muy bajo"),
+            ("2", "Bajo"),
+            ("3", "Medio"),
+            ("4", "Alto"),
+            ("5", "Crítico")
+        ],
+        string="Nivel de riesgo",
+        required=True
+    )
+    tarifa_base = fields.Float(string="Tarifa base")
+>>>>>>> 9f4f54e (Subida proyecto final)
