@@ -292,7 +292,7 @@ class Vuelo(models.Model):
 
 
 # ==========================================================
-# ZONAS DE DESTINO
+# ZONAS DE DESTINOS
 # ==========================================================
 
 class Zona(models.Model):
