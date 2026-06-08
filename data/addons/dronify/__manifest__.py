@@ -1,9 +1,6 @@
 {
-<<<<<<< HEAD
     'name': 'Marcos_Dronify',
-=======
     'name': 'Dronify - Marcos',
->>>>>>> 9f4f54e (Subida proyecto final)
     'version': '1.0',
     'author': 'Marcos',
     'license': 'LGPL-3',

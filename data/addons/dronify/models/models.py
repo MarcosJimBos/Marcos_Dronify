@@ -52,12 +52,12 @@ class Dron(models.Model):
             ("vuelo", "En vuelo"),
             ("taller", "En taller"),
         ],
-<<<<<<< HEAD
+
         default="disponible"
-=======
+
         default="disponible",
         string="Estado"
->>>>>>> 9f4f54e (Subida proyecto final)
+
     )
 
     piloto_autorizado_ids = fields.Many2many(
@@ -78,13 +78,7 @@ class Paquete(models.Model):
     _description = "Paquetes a transportar"
 
     codigo = fields.Char(string="Código", readonly=True, copy=False)
-<<<<<<< HEAD
-
     name = fields.Char(string="Descripción", required=True)
-
-=======
-    name = fields.Char(string="Descripción", required=True)
->>>>>>> 9f4f54e (Subida proyecto final)
     peso = fields.Float(string="Peso (kg)", required=True)
 
     cliente_id = fields.Many2one(
@@ -123,10 +117,7 @@ class Vuelo(models.Model):
     _description = "Registro de vuelos"
 
     codigo = fields.Char(string="Código", readonly=True, copy=False)
-<<<<<<< HEAD
 
-=======
->>>>>>> 9f4f54e (Subida proyecto final)
     name = fields.Char(
         string="Nombre del vuelo",
         required=True,
@@ -146,15 +137,12 @@ class Vuelo(models.Model):
         required=True
     )
 
-<<<<<<< HEAD
-=======
     zona_id = fields.Many2one(
         comodel_name="dronify.zona",
         string="Zona de destino",
         required=True
     )
 
->>>>>>> 9f4f54e (Subida proyecto final)
     paquetes_ids = fields.One2many(
         comodel_name="dronify.paquete",
         inverse_name="vuelo_id",
@@ -176,13 +164,10 @@ class Vuelo(models.Model):
         store=True
     )
 
-<<<<<<< HEAD
     # ==========================
     # CREATE
     # ==========================
 
-=======
->>>>>>> 9f4f54e (Subida proyecto final)
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -190,19 +175,15 @@ class Vuelo(models.Model):
                 vals["codigo"] = datetime.now().strftime("%y%m%d%H%M%S")
         return super().create(vals_list)
 
-<<<<<<< HEAD
     # ==========================
     # COMPUTES
     # ==========================
 
-=======
->>>>>>> 9f4f54e (Subida proyecto final)
     @api.depends("paquetes_ids.peso")
     def _compute_peso_total(self):
         for vuelo in self:
             vuelo.peso_total = sum(vuelo.paquetes_ids.mapped("peso"))
 
-<<<<<<< HEAD
     @api.depends("peso_total", "piloto_id.es_vip")
     def _compute_consumo_estimado(self):
         for vuelo in self:
@@ -226,7 +207,6 @@ class Vuelo(models.Model):
     def action_finalizar_vuelo(self):
         for vuelo in self:
             vuelo.realizado = True
-=======
     @api.depends("peso_total", "zona_id.distancia_km", "zona_id.nivel_riesgo", "paquetes_ids.cliente_id.es_vip")
     def _compute_consumo_estimado(self):
         for vuelo in self:
@@ -313,4 +293,3 @@ class Zona(models.Model):
         required=True
     )
     tarifa_base = fields.Float(string="Tarifa base")
->>>>>>> 9f4f54e (Subida proyecto final)

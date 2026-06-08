@@ -14,10 +14,7 @@
                 <field name="name"/>
                 <field name="dron_id"/>
                 <field name="piloto_id"/>
-<<<<<<< HEAD
-=======
                 <field name="zona_id"/>
->>>>>>> 9f4f54e (Subida proyecto final)
                 <field name="peso_total"/>
                 <field name="consumo_estimado" widget="percentage"/>
                 <field name="preparado" widget="boolean_toggle" class="text-center"/>
@@ -26,8 +23,6 @@
         </field>
     </record>
 
-<<<<<<< HEAD
-=======
         <!-- ========================= -->
         <!-- ZONAS -->
         <!-- ========================= -->
@@ -77,7 +72,6 @@
                   parent="menu_operaciones"
                   action="action_zonas"/>
 
->>>>>>> 9f4f54e (Subida proyecto final)
     <record id="view_vuelo_form" model="ir.ui.view">
         <field name="name">dronify.vuelo.form</field>
         <field name="model">dronify.vuelo</field>
@@ -110,11 +104,8 @@
                                readonly="preparado == True"/>
                         <field name="piloto_id"
                                readonly="preparado == True"/>
-<<<<<<< HEAD
-=======
                         <field name="zona_id"
                                 readonly="preparado == True"/>
->>>>>>> 9f4f54e (Subida proyecto final)
                     </group>
 
                     <group string="Estado y Control">
@@ -277,7 +268,6 @@
     <!-- EXTENSIÓN CONTACTOS -->
     <!-- ========================= -->
 
-<<<<<<< HEAD
     <record id="view_partner_form_dronify" model="ir.ui.view">
         <field name="name">res.partner.form.dronify</field>
         <field name="model">res.partner</field>
@@ -295,7 +285,6 @@
                 </group>
             </xpath>
 
-=======
 
     <!-- Pilotos: solo muestra campos relevantes y oculta pestañas innecesarias -->
     <record id="view_partner_form_piloto" model="ir.ui.view">
@@ -348,7 +337,6 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <!-- Pestañas dependientes de la versión de Odoo; se omiten para evitar ParseError. -->
->>>>>>> 9f4f54e (Subida proyecto final)
         </field>
     </record>
 

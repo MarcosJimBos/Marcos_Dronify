@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 def calcular_consumo_vuelo(peso_total, es_vip=False):
     """
     Calcula el porcentaje de batería que consumirá el vuelo.
@@ -15,7 +14,6 @@ def calcular_consumo_vuelo(peso_total, es_vip=False):
     if es_vip:
         consumo = consumo * 0.9
         
-=======
 def calcular_consumo_vuelo(peso_total, distancia_total=1.0, riesgo_valor=1, es_vip=False):
     """
     NUEVA LÓGICA DE CONSUMO:
@@ -48,7 +46,6 @@ def calcular_consumo_vuelo(peso_total, distancia_total=1.0, riesgo_valor=1, es_v
     if es_vip:
         consumo = consumo * 0.9
 
->>>>>>> 9f4f54e (Subida proyecto final)
     return round(consumo, 2)
 
 def validar_estado_bateria(bateria_actual, consumo_estimado):
