@@ -53,8 +53,6 @@ class Dron(models.Model):
             ("taller", "En taller"),
         ],
 
-        default="disponible"
-
         default="disponible",
         string="Estado"
 

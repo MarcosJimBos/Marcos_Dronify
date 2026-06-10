@@ -23,54 +23,54 @@
         </field>
     </record>
 
-        <!-- ========================= -->
-        <!-- ZONAS -->
-        <!-- ========================= -->
+    <!-- ========================= -->
+    <!-- ZONAS -->
+    <!-- ========================= -->
 
-        <record id="view_zona_list" model="ir.ui.view">
-            <field name="name">dronify.zona.list</field>
-            <field name="model">dronify.zona</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="distancia_km"/>
-                    <field name="nivel_riesgo" widget="badge"
-                        decoration-success="nivel_riesgo in ['1','2']"
-                        decoration-info="nivel_riesgo == '3'"
-                        decoration-warning="nivel_riesgo == '4'"
-                        decoration-danger="nivel_riesgo == '5'"/>
-                    <field name="tarifa_base"/>
-                </list>
-            </field>
-        </record>
+    <record id="view_zona_list" model="ir.ui.view">
+        <field name="name">dronify.zona.list</field>
+        <field name="model">dronify.zona</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="distancia_km"/>
+                <field name="nivel_riesgo" widget="badge"
+                    decoration-success="nivel_riesgo in ['1','2']"
+                    decoration-info="nivel_riesgo == '3'"
+                    decoration-warning="nivel_riesgo == '4'"
+                    decoration-danger="nivel_riesgo == '5'"/>
+                <field name="tarifa_base"/>
+            </list>
+        </field>
+    </record>
 
-        <record id="view_zona_form" model="ir.ui.view">
-            <field name="name">dronify.zona.form</field>
-            <field name="model">dronify.zona</field>
-            <field name="arch" type="xml">
-                <form string="Zona de destino">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="distancia_km"/>
-                            <field name="nivel_riesgo"/>
-                            <field name="tarifa_base"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <record id="view_zona_form" model="ir.ui.view">
+        <field name="name">dronify.zona.form</field>
+        <field name="model">dronify.zona</field>
+        <field name="arch" type="xml">
+            <form string="Zona de destino">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="distancia_km"/>
+                        <field name="nivel_riesgo"/>
+                        <field name="tarifa_base"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="action_zonas" model="ir.actions.act_window">
-            <field name="name">Zonas</field>
-            <field name="res_model">dronify.zona</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <record id="action_zonas" model="ir.actions.act_window">
+        <field name="name">Zonas</field>
+        <field name="res_model">dronify.zona</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-        <menuitem id="menu_zonas"
-                  name="Zonas"
-                  parent="menu_operaciones"
-                  action="action_zonas"/>
+    <menuitem id="menu_zonas"
+                name="Zonas"
+                parent="menu_operaciones"
+                action="action_zonas"/>
 
     <record id="view_vuelo_form" model="ir.ui.view">
         <field name="name">dronify.vuelo.form</field>
@@ -268,26 +268,28 @@
     <!-- EXTENSIÓN CONTACTOS -->
     <!-- ========================= -->
 
-    <record id="view_partner_form_dronify" model="ir.ui.view">
-        <field name="name">res.partner.form.dronify</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
+   <record id="view_partner_form_dronify" model="ir.ui.view">
+     <field name="name">res.partner.form.dronify</field>
+     <field name="model">res.partner</field>
+     <field name="inherit_id" ref="base.view_partner_form"/>
+     <field name="arch" type="xml">
 
-            <xpath expr="//sheet" position="inside">
-                <group string="Dronify">
-                    <field name="es_cliente"/>
-                    <field name="es_vip"
-                           invisible="es_cliente == False"/>
-                    <field name="es_piloto"/>
-                    <field name="licencia"
-                           invisible="es_piloto == False"/>
-                </group>
-            </xpath>
+        <xpath expr="//sheet" position="inside">
+            <group string="Dronify">
+                <field name="es_cliente"/>
+                <field name="es_vip"
+                       invisible="es_cliente == False"/>
+                <field name="es_piloto"/>
+                <field name="licencia"
+                       invisible="es_piloto == False"/>
+            </group>
+        </xpath>
 
+     </field>
+    </record>
 
-    <!-- Pilotos: solo muestra campos relevantes y oculta pestañas innecesarias -->
-    <record id="view_partner_form_piloto" model="ir.ui.view">
+<!-- Pilotos -->
+<record id="view_partner_form_piloto" model="ir.ui.view">
         <field name="name">res.partner.form.piloto</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
@@ -308,9 +310,7 @@
             <xpath expr="//field[@name='website']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <!-- Algunas versiones de la vista base pueden no contener las pestañas 'contacts',
-                 'sales_purchases' o 'internal_notes'. Por compatibilidad, no las ocultamos
-                 usando xpath por nombre para evitar errores de carga de la vista. -->
+            
         </field>
     </record>
 
@@ -336,7 +336,6 @@
             <xpath expr="//field[@name='website']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <!-- Pestañas dependientes de la versión de Odoo; se omiten para evitar ParseError. -->
         </field>
     </record>
 
