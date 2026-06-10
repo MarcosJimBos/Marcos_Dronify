@@ -17,11 +17,76 @@
                 <field name="zona_id"/>
                 <field name="peso_total"/>
                 <field name="consumo_estimado" widget="percentage"/>
-                <field name="preparado" widget="boolean_toggle" class="text-center"/>
-                <field name="realizado" widget="boolean_toggle" class="text-center"/>
+                <field name="preparado" widget="boolean_toggle" class="text-center" readonly="1"/>
+                <field name="realizado" widget="boolean_toggle" class="text-center" readonly="1"/>
             </list>
         </field>
     </record>
+
+
+    <record id="view_vuelo_form" model="ir.ui.view">
+        <field name="name">dronify.vuelo.form</field>
+        <field name="model">dronify.vuelo</field>
+        <field name="arch" type="xml">
+            <form string="Vuelo">
+                <header>
+                    <button name="action_preparar_vuelo"
+                            type="object"
+                            string="Preparar Vuelo"
+                            class="btn-primary"
+                            invisible="preparado == True"/>
+
+                    <button name="action_desbloquear"
+                            type="object"
+                            string="Desbloquear"
+                            invisible="preparado == False"/>
+
+                    <button name="action_finalizar_vuelo"
+                            type="object"
+                            string="Finalizar Vuelo"
+                            invisible="realizado == True"/>
+                </header>
+
+                <sheet>
+
+                    <group string="Planificación">
+                        <field name="name"
+                               readonly="preparado == True"/>
+                        <field name="dron_id"
+                               readonly="preparado == True"/>
+                        <field name="piloto_id"
+                               readonly="preparado == True"/>
+                        <field name="zona_id"
+                                readonly="preparado == True"/>
+                    </group>
+
+                    <group string="Estado y Control">
+                        <field name="preparado" readonly="1"/>
+                        <field name="realizado" readonly="1"/>
+                        <field name="peso_total" readonly="1"/>
+                        <field name="consumo_estimado"  readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Paquetes">
+                            <field name="paquetes_ids"
+                                   readonly="preparado == True">
+                                <list editable="bottom">
+                                    <field name="codigo"/>
+                                    <field name="name"/>
+                                    <field name="peso"/>
+                                    <field name="cliente_id"/>
+                                </list>
+                            </field>
+
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
 
     <!-- ========================= -->
     <!-- ZONAS -->
@@ -65,78 +130,6 @@
         <field name="name">Zonas</field>
         <field name="res_model">dronify.zona</field>
         <field name="view_mode">list,form</field>
-    </record>
-
-    <menuitem id="menu_zonas"
-                name="Zonas"
-                parent="menu_operaciones"
-                action="action_zonas"/>
-
-    <record id="view_vuelo_form" model="ir.ui.view">
-        <field name="name">dronify.vuelo.form</field>
-        <field name="model">dronify.vuelo</field>
-        <field name="arch" type="xml">
-            <form string="Vuelo">
-                <header>
-                    <button name="action_preparar_vuelo"
-                            type="object"
-                            string="Preparar Vuelo"
-                            class="btn-primary"
-                            invisible="preparado == True"/>
-
-                    <button name="action_desbloquear"
-                            type="object"
-                            string="Desbloquear"
-                            invisible="preparado == False"/>
-
-                    <button name="action_finalizar_vuelo"
-                            type="object"
-                            string="Finalizar Vuelo"
-                            invisible="realizado == True"/>
-                </header>
-
-                <sheet>
-
-                    <group string="Planificación">
-                        <field name="name"
-                               readonly="preparado == True"/>
-                        <field name="dron_id"
-                               readonly="preparado == True"/>
-                        <field name="piloto_id"
-                               readonly="preparado == True"/>
-                        <field name="zona_id"
-                                readonly="preparado == True"/>
-                    </group>
-
-                    <group string="Estado y Control">
-                        <field name="preparado" readonly="1"/>
-                        <field name="realizado" readonly="1"/>
-                        <field name="peso_total" readonly="1"/>
-                        <field name="consumo_estimado" widget="percentage" readonly="1"/>
-                    </group>
-
-                    <notebook>
-                        <page string="Paquetes">
-                            <field name="paquetes_ids"
-                                   readonly="preparado == True">
-                                <list editable="bottom">
-                                    <field name="codigo"/>
-                                    <field name="name"/>
-                                    <field name="peso"/>
-                                    <field name="cliente_id"/>
-                                </list>
-                            </field>
-
-                            <group>
-                                <field name="peso_total" readonly="1"/>
-                                <field name="consumo_estimado" widget="percentage" readonly="1"/>
-                            </group>
-                        </page>
-                    </notebook>
-
-                </sheet>
-            </form>
-        </field>
     </record>
 
 
@@ -241,6 +234,11 @@
               parent="menu_operaciones"
               action="action_paquetes"/>
 
+    <menuitem id="menu_zonas"
+                name="Zonas"
+                parent="menu_operaciones"
+                action="action_zonas"/>
+
     <menuitem id="menu_flotas"
               name="Flota"
               parent="menu_dronify_root"/>
@@ -251,7 +249,7 @@
               action="action_drones"/>
 
     <menuitem id="menu_contactos"
-              name="Contactos"
+              name="Personas"
               parent="menu_dronify_root"/>
 
     <menuitem id="menu_pilotos"

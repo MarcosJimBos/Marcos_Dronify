@@ -63,7 +63,8 @@ class Dron(models.Model):
         relation="relacion_piloto_dron",
         column1="dron_id",
         column2="partner_id",
-        string="Pilotos autorizados"
+        string="Pilotos autorizados",
+        domain=[("es_piloto", "=", True)]
     )
 
 
